@@ -85,6 +85,7 @@ public class GameView extends View {
         healthPaint.setColor(Color.GREEN);
         // Инициализация генератора случайных чисел и позиций
         random = new Random();
+
         cubeX = dWidth / 2 - cube.getWidth() / 2;
         cubeY = dHeight - ground.getHeight() - cube.getHeight();
         // Создание списков спиков и взрывов
