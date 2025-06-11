@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:elevation="8dp"
+    android:clipToPadding="false">
+
+    <EditText
+        android:id="@+id/editUsername"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Username"
+        android:background="@drawable/edittext_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#212121"
+        android:textSize="16sp"
+        android:inputType="textPersonName"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="24dp"
+        android:gravity="center_vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_rounded"
+            android:backgroundTint="#B0BEC5"
+            android:minWidth="100dp"
+            android:paddingHorizontal="24dp"
+            android:text="Cancel"
+            android:textColor="#263238"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnContinue"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/btn_rounded"
+            android:backgroundTint="#4CAF50"
+            android:minWidth="100dp"
+            android:paddingHorizontal="24dp"
+            android:text="ok"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

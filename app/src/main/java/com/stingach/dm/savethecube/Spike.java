@@ -3,53 +3,78 @@ package com.stingach.dm.savethecube;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 
 import java.util.Random;
 
-// Класс для бомбы
+// Класс для одной бомбы (спайка)
 public class Spike {
-    // Массив битов для анимации бомбы
-    Bitmap spike[] = new Bitmap[3];
-    // Индекс текущего кадра анимации бомбы
-    int spikeFrame = 0;
-    // Позиция X и Y спика на экране
-    int spikeX, spikeY;
-    // Скорость движения бомбы
-    int spikeVelocity;
-    // Генератор случайных чисел для позиционирования и скорости бомбы
-    Random random;
 
+    // Статический массив повёрнутых спрайтов, общий для всех спайков
+    private static Bitmap[] spikeFrames;
+
+    // Текущий кадр анимации
+    int spikeFrame = 0;
+
+    // Счётчик кадров для плавности анимации
+    public int frameCounter = 0;
+
+    // Координаты спайка
+    int spikeX, spikeY;
+
+    // Скорость падения спайка
+    int spikeVelocity;
+
+    // Статический генератор случайных чисел, общий для всех спайков
+    private static final Random random = new Random();
+
+    // Конструктор, инициализирует позицию и подготавливает спрайты (при первом вызове)
     public Spike(Context context) {
-        // Загрузка текстур бомб из ресурсов
-        spike[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.spike0);
-        spike[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.spike1);
-        spike[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.spike2);
-        // Инициализация генератора случайных чисел
-        random = new Random();
-        // Перезапуск позиции бомбы
+        // Инициализация массива с повёрнутыми изображениями спайка — делаем один раз
+        if (spikeFrames == null) {
+            initSpikeFrames(context);
+        }
+
+        // Устанавливаем стартовую позицию и скорость
         resetPosition();
     }
 
-    // Получение бомбы по индексу кадра
+    // Инициализация массива повёрнутых спрайтов (вызывается один раз)
+    private void initSpikeFrames(Context context) {
+        Bitmap original = BitmapFactory.decodeResource(context.getResources(), R.drawable.spike0);
+        spikeFrames = new Bitmap[10];
+        Matrix matrix = new Matrix();
+
+        for (int i = 0; i < 10; i++) {
+            matrix.reset();
+            matrix.postRotate(i * 36); // Поворот на 36 градусов
+            spikeFrames[i] = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+        }
+    }
+
+    // Возвращает текущее изображение спайка для отрисовки
     public Bitmap getSpike(int spikeFrame) {
-        return spike[spikeFrame];
+        return spikeFrames[spikeFrame];
     }
 
-    // Получение ширины бомбы
+    // Ширина спайка (одинакова для всех кадров)
     public int getSpikeWidth() {
-        return spike[0].getWidth();
+        return spikeFrames[0].getWidth();
     }
 
-    // Получение высоты бомбы
+    // Высота спайка
     public int getSpikeHeight() {
-        return spike[0].getHeight();
+        return spikeFrames[0].getHeight();
     }
 
-    // Перезапуск позиции бомбы
+    // Сброс позиции и скорости спайка — вызывается при падении или столкновении
     public void resetPosition() {
-        // Расположение бомбы в пределах экрана с заданной скоростью
         spikeX = random.nextInt(GameView.dWidth - getSpikeWidth());
-        spikeY = -200 + random.nextInt(600) * -1;
+
+        // Задаём Y за пределами экрана сверху случайно в диапазоне от -200 до -800
+        spikeY = -200 - random.nextInt(600);
+
+        // Скорость падения в диапазоне 35-50 пикселей за тик
         spikeVelocity = 35 + random.nextInt(16);
     }
 }

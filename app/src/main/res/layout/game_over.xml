@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your Points: "
+                    android:text="Score: "
                     android:textSize="24sp" />
                 <TextView
                     android:id="@+id/tvPoints"
@@ -60,7 +60,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Highest: "
+                    android:text="Best: "
                     android:textSize="24sp"
                     android:layout_gravity="center|right" />
                 <TextView
@@ -73,8 +73,19 @@
                     android:fontFamily="@font/hackney_block_regular" />
             </TableRow>
         </TableLayout>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="80dp" />
+
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HISTORY"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:background="@drawable/history_button"
+            android:layout_gravity="center"
+            android:elevation="4dp"
+            android:layout_marginTop="16dp"
+            android:onClick="openHistory" />
+
     </LinearLayout>
 </LinearLayout>

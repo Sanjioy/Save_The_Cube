@@ -10,64 +10,86 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-// Класс для экрана окончания игры
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+// Класс, отвечающий за экран окончания игры
 public class GameOver extends AppCompatActivity {
 
     // UI элементы
-    TextView tvPoints;
-    TextView tvHighest;
-    ImageView ivNewHighest;
-
-    // Представление предпочтений для сохранения рекорда
-    SharedPreferences sharedPreferences;
+    private TextView tvPoints;      // Текущее количество очков
+    private TextView tvHighest;     // Лучший результат
+    private ImageView ivNewHighest; // Иконка "Новый рекорд!"
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_over);
 
-        // Инициализация UI элементов
+        // Привязка UI элементов
         tvPoints = findViewById(R.id.tvPoints);
         tvHighest = findViewById(R.id.tvHighest);
         ivNewHighest = findViewById(R.id.ivNewHighest);
 
-        // Получение количества очков из переданных данных
-        int points = getIntent().getExtras().getInt("points");
+        // Получаем очки из Intent с защитой от null
+        Bundle extras = getIntent().getExtras();
+        int points = (extras != null) ? extras.getInt("points", 0) : 0;
+        tvPoints.setText(String.valueOf(points));
 
-        // Отображение количества очков
-        tvPoints.setText("" + points);
+        // Получаем userId из SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("my_pref", MODE_PRIVATE);
+        int userId = prefs.getInt("user_id", -1);
+        if (userId == -1) return; // Если пользователь не найден — выходим
 
-        // Инициализация предпочтений
-        sharedPreferences = getSharedPreferences("my_pref", 0);
+        // Работа с базой данных в фоне
+        new Thread(() -> {
+            AppDatabase db = AppDatabase.getInstance(getApplicationContext());
 
-        // Получение текущего рекорда
-        int highest = sharedPreferences.getInt("highest", 0);
+            // Получение текущего лучшего результата
+            Integer bestSoFar = db.gameSessionsDao().getMaxScoreForUser(userId);
+            if (bestSoFar == null) bestSoFar = 0;
 
-        // Проверка, превышены ли текущие очки рекорд
-        if (points > highest) {
-            // Если да, то показываем иконку нового рекорда
-            ivNewHighest.setVisibility(View.VISIBLE);
-            // Обновляем рекорд
-            highest = points;
-            // Сохраняем обновленный рекорд
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("highest", highest);
-            editor.commit();
-        }
+            // Определяем, является ли это новым рекордом
+            boolean isNewRecord = points > bestSoFar;
+            int bestScore = Math.max(points, bestSoFar);
 
-        // Отображение рекорда
-        tvHighest.setText("" + highest);
+            // Создаем и сохраняем сессию
+            GameSessions session = new GameSessions();
+            session.userId = userId;
+            session.score = points;
+            session.bestScore = bestScore;
+            session.dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
+            db.gameSessionsDao().insert(session);
+
+            // Обновляем UI на главном потоке
+            runOnUiThread(() -> {
+                tvHighest.setText(String.valueOf(bestScore));
+                if (isNewRecord) {
+                    ivNewHighest.setVisibility(View.VISIBLE);
+                }
+            });
+        }).start();
     }
 
-    // Метод для перезапуска игры
+    // Кнопка "Играть снова"
     public void restart(View view) {
+        Intent intent = new Intent(GameOver.this, GameActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    // Кнопка "Выход"
+    public void exit(View view) {
         Intent intent = new Intent(GameOver.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-    // Метод для выхода из игры
-    public void exit(View view) {
-        finish();
+    // Кнопка "История"
+    public void openHistory(View view) {
+        Intent intent = new Intent(this, GameHistoryActivity.class);
+        startActivity(intent);
     }
 }
