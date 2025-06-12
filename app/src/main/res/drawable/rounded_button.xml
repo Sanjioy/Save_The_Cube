@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-
-    <solid android:color="#A5D6A7" />  <!-- светло-зеленый фон -->
-
-    <corners android:radius="18dp" />  <!-- закругления -->
-
-    <padding
+    <solid android:color="#bb8044" />
+    <corners android:radius="20dp" />
+<padding
         android:left="8dp"
         android:top="4dp"
         android:right="8dp"

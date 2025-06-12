@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Save The Cube</string>
+    <string name="user_icon">User icon</string>
+    <string name="username">Username</string>
+    <string name="best_0">Best: 0</string>
+    <string name="save_the_cube">Save The Cube</string>
+    <string name="start">Start</string>
+    <string name="users">USERS</string>
+    <string name="add_user">add USER</string>
+    <string name="exit">Exit</string>
+    <string name="choose_user">Choose user</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
 </resources>
